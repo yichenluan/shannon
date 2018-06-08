@@ -9,6 +9,7 @@ import (
 	"errors"
 	//"encoding/json"
 	"time"
+	"fmt"
 )
 
 const (
@@ -172,7 +173,7 @@ func (ada *AdaDeal) AutoRenew() {
 }
 
 func (ada *AdaDeal) Clock() {
-	clocker := time.NewTicker(time.Duration(5000) * time.Millisecond)
+	clocker := time.NewTicker(time.Duration(1) * time.Hour)
 	for {
 		select {
 		case <- clocker.C:
@@ -181,6 +182,12 @@ func (ada *AdaDeal) Clock() {
 			adaPrice := ada.AdaInfo.GetCoinPrice()
 			adaAmount := ada.AdaInfo.GetCoinAmount()
 			usdtAmount := ada.AdaInfo.GetUSDTAmount()
+
+			mailBody := fmt.Sprintf("ADA Price: %f\n", adaPrice)
+			mailBody = mailBody + fmt.Sprintf("ADA amount: %f, USDT amount: %f\n", adaAmount, usdtAmount)
+			mailBody = mailBody + fmt.Sprintf("ADA asset: %f, ADA / USDT ratio: %f", adaPrice * adaAmount, adaPrice*adaAmount / usdtAmount)
+
+			go SendMail(mailBody)
 
 			korok.Info("[Asset Info] ada: %f, usdt: %f, ratio: %f", adaPrice * adaAmount, usdtAmount, adaPrice*adaAmount / usdtAmount)
 		}
