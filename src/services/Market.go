@@ -8,6 +8,7 @@ import (
 	//"github.com/MsloveDl/HuobiProAPI/models"
 	//"github.com/MsloveDl/HuobiProAPI/untils"
 	"config"
+	"korok"
 	"models"
 	"untils"
 )
@@ -183,28 +184,35 @@ func GetTimestamp() models.TimestampReturn {
 
 // 查询当前用户的所有账户, 根据包含的私钥查询
 // return: AccountsReturn对象
-func GetAccounts() models.AccountsReturn {
+func GetAccounts() (models.AccountsReturn, error) {
 	accountsReturn := models.AccountsReturn{}
 
 	strRequest := "/v1/account/accounts"
 	jsonAccountsReturn := untils.ApiKeyGet(make(map[string]string), strRequest)
-	json.Unmarshal([]byte(jsonAccountsReturn), &accountsReturn)
+	err := json.Unmarshal([]byte(jsonAccountsReturn), &accountsReturn)
 
-	return accountsReturn
+	if err != nil {
+		korok.Fatal("GetAccounts json Unmarshal Failed. json: %s", jsonAccountsReturn)
+	}
+
+	return accountsReturn, err
 }
 
 // 根据账户ID查询账户余额
 // nAccountID: 账户ID, 不知道的话可以通过GetAccounts()获取, 可以只现货账户, C2C账户, 期货账户
 // return: BalanceReturn对象
-func GetAccountBalance(strAccountID string) models.BalanceReturn {
+func GetAccountBalance(strAccountID string) (models.BalanceReturn, error) {
 	balanceReturn := models.BalanceReturn{}
 
 	strRequest := fmt.Sprintf("/v1/account/accounts/%s/balance", strAccountID)
 	jsonBanlanceReturn := untils.ApiKeyGet(make(map[string]string), strRequest)
-	fmt.Printf("json:%v\n", jsonBanlanceReturn)
-	json.Unmarshal([]byte(jsonBanlanceReturn), &balanceReturn)
+	err := json.Unmarshal([]byte(jsonBanlanceReturn), &balanceReturn)
 
-	return balanceReturn
+	if err != nil {
+		korok.Fatal("GetAccountBalance json Unmarshal Faild. json: %s", jsonBanlanceReturn)
+	}
+
+	return balanceReturn, err
 }
 
 //------------------------------------------------------------------------------------------
@@ -213,7 +221,7 @@ func GetAccountBalance(strAccountID string) models.BalanceReturn {
 // 下单
 // placeRequestParams: 下单信息
 // return: PlaceReturn对象
-func Place(placeRequestParams models.PlaceRequestParams) models.PlaceReturn {
+func Place(placeRequestParams models.PlaceRequestParams) (models.PlaceReturn, error) {
 	placeReturn := models.PlaceReturn{}
 
 	mapParams := make(map[string]string)
@@ -230,9 +238,12 @@ func Place(placeRequestParams models.PlaceRequestParams) models.PlaceReturn {
 
 	strRequest := "/v1/order/orders/place"
 	jsonPlaceReturn := untils.ApiKeyPost(mapParams, strRequest)
-	json.Unmarshal([]byte(jsonPlaceReturn), &placeReturn)
+	err := json.Unmarshal([]byte(jsonPlaceReturn), &placeReturn)
+	if err != nil {
+		korok.Fatal("Place json Unmarshal Failed. json: %s", jsonPlaceReturn)
+	}
 
-	return placeReturn
+	return placeReturn, err
 }
 
 // 申请撤销一个订单请求
