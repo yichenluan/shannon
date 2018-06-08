@@ -23,7 +23,7 @@ import (
 // strPeriod: K线类型, 1min, 5min, 15min......
 // nSize: 获取数量, [1-2000]
 // return: KLineReturn 对象
-func GetKLine(strSymbol, strPeriod string, nSize int) models.KLineReturn {
+func GetKLine(strSymbol, strPeriod string, nSize int) (models.KLineReturn, error) {
 	kLineReturn := models.KLineReturn{}
 
 	mapParams := make(map[string]string)
@@ -35,9 +35,12 @@ func GetKLine(strSymbol, strPeriod string, nSize int) models.KLineReturn {
 	strUrl := config.MARKET_URL + strRequestUrl
 
 	jsonKLineReturn := untils.HttpGetRequest(strUrl, mapParams)
-	json.Unmarshal([]byte(jsonKLineReturn), &kLineReturn)
+	err := json.Unmarshal([]byte(jsonKLineReturn), &kLineReturn)
+	if err != nil {
+		korok.Fatal("GetKLine json Unmarshal Failed. json: %s", kLineReturn)
+	}
 
-	return kLineReturn
+	return kLineReturn, err
 }
 
 // 获取聚合行情

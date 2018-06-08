@@ -3,7 +3,6 @@ package main
 import (
 	"config"
 	"korok"
-	"sync"
 )
 
 func main() {
@@ -13,11 +12,9 @@ func main() {
 		return
 	}
 
-	var wait sync.WaitGroup
-	ar := NewAR()
-	ar.Run()
-	korok.Info("AutoRebalance Begin to Run.")
+	ada := NewAdaDeal()
 
-	wait.Add(1)
-	wait.Wait()
+	ada.AutoRenew()
+	korok.Info("Ada start.")
+	ada.Clock()
 }

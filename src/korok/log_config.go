@@ -16,7 +16,7 @@ func NewLogConf() *LogConf {
 		FilePath:       "../log",
 		FileSize:       2000000000,
 		FlushThreshold: 4000 * 1000,
-		CallerSkip:     3,
+		CallerSkip:     4,
 	}
 }
 
