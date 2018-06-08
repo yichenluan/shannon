@@ -54,7 +54,7 @@ func (ci *CoinInfo) ClockRenew() {
 			}
 			err := ci.RenewPriceInfo()
 			if err == nil {
-				korok.Info("[Price Info] %s price: %s.", ci.CoinName, ci.GetCoinPrice())
+				korok.Info("[Price Info] %s price: %f.", ci.CoinName, ci.GetCoinPrice())
 			}
 		}
 	}
