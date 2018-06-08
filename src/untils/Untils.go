@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -31,7 +30,6 @@ func HttpGetRequest(strUrl string, mapParams map[string]string) string {
 		strParams := Map2UrlQuery(mapParams)
 		strRequestUrl = strUrl + "?" + strParams
 	}
-	fmt.Printf("url: %v\n", mapParams)
 
 	// 构建Request, 并且按官方要求添加Http Header
 	request, err := http.NewRequest("GET", strRequestUrl, nil)
@@ -106,7 +104,6 @@ func ApiKeyGet(mapParams map[string]string, strRequestPath string) string {
 
 	hostName := "api.huobi.pro"
 	mapParams["Signature"] = CreateSign(mapParams, strMethod, hostName, strRequestPath, config.SECRET_KEY)
-	fmt.Printf("url: %v\n", mapParams["Signature"])
 
 	strUrl := config.TRADE_URL + strRequestPath
 	return HttpGetRequest(strUrl, MapValueEncodeURI(mapParams))
