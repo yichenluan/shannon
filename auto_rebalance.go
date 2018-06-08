@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	RENEW_INTERVAL = 500 //ms
+	RENEW_INTERVAL = 1000 //ms
 )
 
 func NewCoinInfo(name string, accountID string) *CoinInfo {
@@ -142,14 +142,13 @@ func (ci *CoinInfo) RenewPriceInfo() error {
 
 	kLine := kLineData[0]
 
-	kLineStr, _ := json.Marshal(kLine)
-	korok.Info("kLine : %v", string(kLineStr))
+	//kLineStr, _ := json.Marshal(kLine)
+	//korok.Info("kLine : %v", string(kLineStr))
 	ci.SetCoinPrice(kLine.Close)
 	korok.Info("Curr %s Price: %v", ci.CoinName, kLine.Close)
 
 	return nil
 }
-
 
 
 type Strategy interface {}
