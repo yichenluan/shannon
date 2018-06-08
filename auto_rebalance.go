@@ -48,10 +48,14 @@ func (ci *CoinInfo) ClockRenew() {
 			if ci.NeedRenewAmount {
 				err := ci.RenewAmountInfo()
 				if err == nil {
+					korok.Info("[Amount Info] %s amount: %f, usdt amount: %f.", ci.CoinName, ci.GetCoinAmount(), ci.GetUSDTAmount())
 					ci.NeedRenewAmount = false
 				}
 			}
-			ci.RenewPriceInfo()
+			err := ci.RenewPriceInfo()
+			if err == nil {
+				korok.Info("[Price Info] %s price: %s.", ci.CoinName, ci.GetCoinPrice())
+			}
 		}
 	}
 }
@@ -145,7 +149,6 @@ func (ci *CoinInfo) RenewPriceInfo() error {
 	//kLineStr, _ := json.Marshal(kLine)
 	//korok.Info("kLine : %v", string(kLineStr))
 	ci.SetCoinPrice(kLine.Close)
-	korok.Info("Curr %s Price: %v", ci.CoinName, kLine.Close)
 
 	return nil
 }
@@ -174,6 +177,12 @@ func (ada *AdaDeal) Clock() {
 		select {
 		case <- clocker.C:
 			ada.AdaInfo.NeedRenewAmount = true
+
+			adaPrice := ada.AdaInfo.GetCoinPrice()
+			adaAmount := ada.AdaInfo.GetCoinAmount()
+			usdtAmount := ada.AdaInfo.GetUSDTAmount()
+
+			korok.Info("[Asset Info] ada: %f, usdt: %f, ratio: %f", adaPrice * adaAmount, usdtAmount, adaPrice*adaAmount / usdtAmount)
 		}
 	}
 }
