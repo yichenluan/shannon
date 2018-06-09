@@ -84,29 +84,31 @@ func (ar * AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool
 		return
 	}
 	totalAsset := info.CoinPrice * info.CoinAmount + info.USDTAmount
-	perfectCoinAmount := totalAsset * (ar.PerfectRatio / (ar.PerfectRatio + 1))
+	perfectCoinAsset := totalAsset * (ar.PerfectRatio / (ar.PerfectRatio + 1))
 
 	var placeErr error
 	if action == ACTION_SELL {
-		coinSellAmount := info.CoinAmount - perfectCoinAmount
+		coinSellAsset := info.CoinAmount * info.CoinPrice - perfectCoinAsset
+		coinSellAmount := coinSellAsset / info.CoinPrice
 
 		opRecord += fmt.Sprintf("<h1>SELL %s HAPPEND !</h1>\n\n", ar.CoinName)
 		opRecord += fmt.Sprintf("<h2>SELL INFO</h2>\n")
 		opRecord += fmt.Sprintf("SELL COIN: %s\n", ar.CoinName)
 		opRecord += fmt.Sprintf("SELL AMOUNT: %f\n", coinSellAmount)
 		opRecord += fmt.Sprintf("SELL PRICE: %f\n", info.CoinPrice)
-		opRecord += fmt.Sprintf("SELL ASSET: %f\n\n", info.CoinPrice * coinSellAmount)
+		opRecord += fmt.Sprintf("SELL ASSET: %f\n\n", coinSellAsset)
 
 		placeErr = ar.SellCoin(coinSellAmount)
 	} else if action == ACTION_BUY {
-		coinBuyAmount := perfectCoinAmount - info.CoinAmount
+		coinBuyAsset := perfectCoinAsset - info.CoinAmount * info.CoinPrice
+		coinBuyAmount := coinBuyAsset / info.CoinPrice
 
 		opRecord += fmt.Sprintf("<h1>BUY %s HAPPEND !</h1>\n\n", ar.CoinName)
 		opRecord += fmt.Sprintf("<h2>BUY INFO</h2>\n")
 		opRecord += fmt.Sprintf("BUY COIN: %s\n", ar.CoinName)
 		opRecord += fmt.Sprintf("BUY AMOUNT: %f\n", coinBuyAmount)
 		opRecord += fmt.Sprintf("BUY PRICE: %f\n", info.CoinPrice)
-		opRecord += fmt.Sprintf("BUY ASSET: %f\n\n", info.CoinPrice * coinBuyAmount)
+		opRecord += fmt.Sprintf("BUY ASSET: %f\n\n", coinBuyAsset)
 
 		placeErr = ar.BuyCoin(coinBuyAmount)
 	}
