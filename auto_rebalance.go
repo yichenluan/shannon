@@ -73,7 +73,11 @@ func (ar *AutoRebalance) AutoRb(Signal chan int) {
 }
 
 func (ar * AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool) {
-	ratio := ar.CurrRatio(info)
+	ratio, err := ar.CurrRatio(info)
+	if err != nil {
+		opRecord = "Compute CurrRatio Failed."
+		return opRecord, true
+	}
 	action := ar.RbAction(ratio)
 	if action == ACTION_NONEED {
 		isChange = false
@@ -174,8 +178,12 @@ func (ar *AutoRebalance) SellCoin(amount float64) error {
 	return nil
 }
 
-func (ar *AutoRebalance) CurrRatio(info *Info) float64 {
-	return info.CoinPrice * info.CoinAmount / info.USDTAmount
+func (ar *AutoRebalance) CurrRatio(info *Info) (float64, error) {
+	if (info.CoinAmount <= 0 || info.USDTAmount <= 0) {
+		korok.Fatal("Amount Error, CoinAmount: %f, USDTAmount: %f", info.CoinAmount, info.USDTAmount)
+		return 0, errors.New("Amount Error")
+	}
+	return info.CoinPrice * info.CoinAmount / info.USDTAmount, nil
 }
 
 func (ar *AutoRebalance) RbAction(ratio float64) int {
