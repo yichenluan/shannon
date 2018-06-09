@@ -26,7 +26,7 @@ func (ada *AdaDeal) AutoRenew() {
 
 func (ada *AdaDeal) AutoRb() {
 	ada.Rebalance.RunRbRountine(ada.RbChannel)
-	clocker := time.NewTicker(time.Duration(RENEW_INTERVAL * 10) * time.Millisecond)
+	clocker := time.NewTicker(time.Duration(RENEW_INTERVAL) * time.Millisecond)
 	for {
 		select {
 		case <- clocker.C:

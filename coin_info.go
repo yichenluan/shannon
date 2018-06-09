@@ -42,11 +42,11 @@ func (ci *CoinInfo) RunRenewRoutine() {
 }
 
 func (ci *CoinInfo) ClockMail() {
-	clocker := time.NewTicker(time.Duration(10) * time.Minute)
+	clocker := time.NewTicker(time.Duration(1) * time.Minute)
 	for {
 		select {
 		case <- clocker.C:
-			mailHead := "BlockChain Ticker Inform"
+			mailHead := "[BlockChain] Ticker Inform"
 			mailBody := ci.CoinInfoBody(mailHead)
 			go SendMail(mailHead, mailBody)
 		}
@@ -63,7 +63,7 @@ func (ci *CoinInfo) ClockRenew() {
 				if err == nil {
 					korok.Info("[Amount Info] %s amount: %f, usdt amount: %f.", ci.CoinName, ci.GetCoinAmount(), ci.GetUSDTAmount())
 					ci.NeedRenewAmount = false
-					mailHead := "BlockChain Renew Inform !!!"
+					mailHead := "[BlockChain] Renew Inform !!!"
 					mailBody := ci.CoinInfoBody(mailHead)
 					go SendMail(mailHead, mailBody)
 				}

@@ -181,8 +181,8 @@ func (ar *AutoRebalance) SellCoin(amount float64) error {
 }
 
 func (ar *AutoRebalance) CurrRatio(info *Info) (float64, error) {
-	if (info.CoinAmount <= 0 || info.USDTAmount <= 0) {
-		korok.Fatal("Amount Error, CoinAmount: %f, USDTAmount: %f", info.CoinAmount, info.USDTAmount)
+	if (info.CoinAmount <= 0 || info.USDTAmount <= 0 || info.CoinPrice <= 0) {
+		korok.Fatal("Amount Error, CoinPrice: %f, CoinAmount: %f, USDTAmount: %f", info.CoinPrice, info.CoinAmount, info.USDTAmount)
 		return 0, errors.New("Amount Error")
 	}
 	return info.CoinPrice * info.CoinAmount / info.USDTAmount, nil
