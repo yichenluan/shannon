@@ -7,13 +7,15 @@ import (
 )
 
 func SendMail(body string) {
+	korok.Info("begin send mail")
+	
 	from := config.ShannonConf.FromMail
 	pass := config.ShannonConf.FromPwd
 	to := config.ShannonConf.ToMail
 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
-		"Subject: Hello there\n\n" +
+		"Subject: [BlockChain] Hourly Status\n\n" +
 		body
 
 	err := smtp.SendMail("smtp.gmail.com:587",

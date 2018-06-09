@@ -15,6 +15,5 @@ func main() {
 	ada := NewAdaDeal()
 
 	ada.AutoRenew()
-	korok.Info("Ada start.")
-	ada.Clock()
+	ada.AutoRb()
 }

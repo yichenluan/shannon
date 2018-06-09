@@ -22,11 +22,13 @@ type ShannonConfig struct {
 	AccessKey string  `json:"AccessKey"`
 	SecretKey string  `json:"SecretKey"`
 	AccountID string  `json:"AccountID"`
-	Ratio     float32 `json:"Ratio"`
-	Coin      string  `json:"Coin"`
 	FromMail string `json:"FromMail`
 	FromPwd  string `json:"FromPwd"`
 	ToMail string 	`json:"ToMail"`
+
+	PerfectRatio	float64 `json:"PerfectRatio"`
+	UpRatio float64 `json:"UpRatio"`
+	DownRatio float64 `json:"DownRatio"`
 }
 
 func GetShannonConfig(path string) error {
