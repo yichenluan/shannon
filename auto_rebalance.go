@@ -64,6 +64,7 @@ func (ar *AutoRebalance) AutoRb(Signal chan int) {
 		case info := <- ar.InfoChannel:
 			opRecord, isChange := ar.HandleInfo(info)
 			if isChange {
+				korok.Info("[BlockChain] %s Rebalance Happend !!", ar.CoinName)
 				mailHead := fmt.Sprintf("[BlockChain] %s Rebalance Happend !!", ar.CoinName)
 				go SendMail(mailHead, opRecord)
 				Signal <- 1
@@ -133,7 +134,6 @@ func (ar * AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool
 }
 
 func (ar *AutoRebalance) BuyCoin(amount float64) error {
-	return nil
 
 	buyPara := models.PlaceRequestParams {
 		AccountID: ar.AccountID,
@@ -157,7 +157,6 @@ func (ar *AutoRebalance) BuyCoin(amount float64) error {
 }
 
 func (ar *AutoRebalance) SellCoin(amount float64) error {
-	return nil
 	
 	sellPara := models.PlaceRequestParams {
 		AccountID: ar.AccountID,

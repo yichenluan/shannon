@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	RENEW_INTERVAL = 1000 //ms
+	RENEW_INTERVAL = 500 //ms
 )
 
 func NewCoinInfo(name string, accountID string) *CoinInfo {
@@ -42,7 +42,7 @@ func (ci *CoinInfo) RunRenewRoutine() {
 }
 
 func (ci *CoinInfo) ClockMail() {
-	clocker := time.NewTicker(time.Duration(1) * time.Minute)
+	clocker := time.NewTicker(time.Duration(30) * time.Minute)
 	for {
 		select {
 		case <- clocker.C:
@@ -54,13 +54,15 @@ func (ci *CoinInfo) ClockMail() {
 }
 
 func (ci *CoinInfo) ClockRenew() {
+	var round int = 0
 	clocker := time.NewTicker(time.Duration(RENEW_INTERVAL) * time.Millisecond)
 	for {
 		select {
 		case <- clocker.C:
 			ci.RenewAmountInfo()
 			err := ci.RenewPriceInfo()
-			if err == nil {
+			round = (round + 1) % 20
+			if err == nil && round == 0 {
 				korok.Info("[Price Info] %s price: %f.", ci.CoinName, ci.GetCoinPrice())
 			}
 			if ci.NeedRenewAmount {
@@ -83,7 +85,8 @@ func (ci *CoinInfo) CoinInfoBody(head string) (body string) {
 	body += fmt.Sprintf("\n\nCOIN: %s\n", ci.CoinName)
 	body += fmt.Sprintf("COIN AMOUNT: %f, COIN PRICE: %f\n", coinAmount, coinPrice)
 	body += fmt.Sprintf("COIN ASSET: %f, USDT ASSET: %f\n", coinAmount * coinPrice, usdtAmount)
-	body += fmt.Sprintf("COIN / USDT RATIO: %s/usdt: %f\n", ci.CoinName, coinAmount*coinPrice / usdtAmount)
+	body += fmt.Sprintf("COIN / USDT RATIO: %s/usdt: %f\n\n\n", ci.CoinName, coinAmount*coinPrice / usdtAmount)
+	body += fmt.Sprintf("TOTAL ASSET: %f\n", coinAmount * coinPrice + usdtAmount)
 	return body
 }
 
