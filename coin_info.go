@@ -58,19 +58,17 @@ func (ci *CoinInfo) ClockRenew() {
 	for {
 		select {
 		case <- clocker.C:
-			if ci.NeedRenewAmount {
-				err := ci.RenewAmountInfo()
-				if err == nil {
-					korok.Info("[Amount Info] %s amount: %f, usdt amount: %f.", ci.CoinName, ci.GetCoinAmount(), ci.GetUSDTAmount())
-					ci.NeedRenewAmount = false
-					mailHead := "[BlockChain] Renew Inform !!!"
-					mailBody := ci.CoinInfoBody(mailHead)
-					go SendMail(mailHead, mailBody)
-				}
-			}
+			ci.RenewAmountInfo()
 			err := ci.RenewPriceInfo()
 			if err == nil {
 				korok.Info("[Price Info] %s price: %f.", ci.CoinName, ci.GetCoinPrice())
+			}
+			if ci.NeedRenewAmount {
+				korok.Info("[Amount Info] %s amount: %f, usdt amount: %f.", ci.CoinName, ci.GetCoinAmount(), ci.GetUSDTAmount())
+				ci.NeedRenewAmount = false
+				mailHead := "[BlockChain] Renew Inform !!!"
+				mailBody := ci.CoinInfoBody(mailHead)
+				go SendMail(mailHead, mailBody)
 			}
 		}
 	}
