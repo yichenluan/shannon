@@ -64,7 +64,8 @@ func (ar *AutoRebalance) AutoRb(Signal chan int) {
 		case info := <- ar.InfoChannel:
 			opRecord, isChange := ar.HandleInfo(info)
 			if isChange {
-				go SendMail(opRecord)
+				mailHead := fmt.Sprintf("[BlockChain] %s Rebalance Happend !!", ar.CoinName)
+				go SendMail(mailHead, opRecord)
 				Signal <- 1
 			}
 		}
@@ -79,7 +80,7 @@ func (ar * AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool
 		return
 	}
 	totalAsset := info.CoinPrice * info.CoinAmount + info.USDTAmount
-	perfectCoinAmount := totalAsset * ar.PerfectRatio
+	perfectCoinAmount := totalAsset * (ar.PerfectRatio / (ar.PerfectRatio + 1))
 
 	var placeErr error
 	if action == ACTION_SELL {
