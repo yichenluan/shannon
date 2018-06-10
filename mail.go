@@ -1,21 +1,21 @@
 package main
 
 import (
-	"net/smtp"
 	"config"
 	"korok"
+	"net/smtp"
 )
 
 func SendMail(head string, body string) {
 	korok.Info("begin send mail")
-	
+
 	from := config.ShannonConf.FromMail
 	pass := config.ShannonConf.FromPwd
 	to := config.ShannonConf.ToMail
 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
-		"Subject: "+ head + "\n\n" +
+		"Subject: " + head + "\n\n" +
 		body
 
 	err := smtp.SendMail("smtp.gmail.com:587",

@@ -6,16 +6,16 @@ import (
 )
 
 type AdaDeal struct {
-	AdaInfo 	*CoinInfo
-	Rebalance 	*AutoRebalance
+	AdaInfo   *CoinInfo
+	Rebalance *AutoRebalance
 
-	RbChannel 	chan int
+	RbChannel chan int
 }
 
 func NewAdaDeal() *AdaDeal {
 	return &AdaDeal{
-		AdaInfo: NewCoinInfo("ada", config.ShannonConf.AccountID),
-		Rebalance:  NewARStrategy("ada", config.ShannonConf.AccountID),
+		AdaInfo:   NewCoinInfo("ada", config.ShannonConf.AccountID),
+		Rebalance: NewARStrategy("ada", config.ShannonConf.AccountID),
 		RbChannel: make(chan int, 1),
 	}
 }
@@ -29,16 +29,16 @@ func (ada *AdaDeal) AutoRb() {
 	clocker := time.NewTicker(time.Duration(RENEW_INTERVAL) * time.Millisecond)
 	for {
 		select {
-		case <- clocker.C:
-			info := &Info {
-				CoinPrice : ada.AdaInfo.GetCoinPrice(),
-				CoinAmount : ada.AdaInfo.GetCoinAmount(),
-				USDTAmount : ada.AdaInfo.GetUSDTAmount(),
+		case <-clocker.C:
+			info := &Info{
+				CoinPrice:  ada.AdaInfo.GetCoinPrice(),
+				CoinAmount: ada.AdaInfo.GetCoinAmount(),
+				USDTAmount: ada.AdaInfo.GetUSDTAmount(),
 			}
 
 			ada.Rebalance.ReceiveInfo(info)
 
-		case <- ada.RbChannel:
+		case <-ada.RbChannel:
 			// TODO.
 			ada.AdaInfo.NeedRenewAmount = true
 		}

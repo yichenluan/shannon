@@ -1,14 +1,14 @@
 package main
 
 import (
+	"errors"
 	"korok"
 	"services"
 	"strconv"
 	"sync"
-	"errors"
 	//"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 const (
@@ -17,22 +17,22 @@ const (
 
 func NewCoinInfo(name string, accountID string) *CoinInfo {
 	return &CoinInfo{
-		CoinName : name,
-		AccountID: accountID,
-		NeedRenewAmount : true,
+		CoinName:        name,
+		AccountID:       accountID,
+		NeedRenewAmount: true,
 	}
 }
 
 type CoinInfo struct {
-	CoinName 	string
-	AccountID 	string
+	CoinName  string
+	AccountID string
 
-	NeedRenewAmount 	bool
+	NeedRenewAmount bool
 
-	Mu	sync.Mutex
+	Mu sync.Mutex
 
-	CoinPrice 	float64
-	CoinAmount  float64
+	CoinPrice  float64
+	CoinAmount float64
 	USDTAmount float64
 }
 
@@ -45,7 +45,7 @@ func (ci *CoinInfo) ClockMail() {
 	clocker := time.NewTicker(time.Duration(30) * time.Minute)
 	for {
 		select {
-		case <- clocker.C:
+		case <-clocker.C:
 			mailHead := "[BlockChain] Ticker Inform"
 			mailBody := ci.CoinInfoBody(mailHead)
 			go SendMail(mailHead, mailBody)
@@ -58,7 +58,7 @@ func (ci *CoinInfo) ClockRenew() {
 	clocker := time.NewTicker(time.Duration(RENEW_INTERVAL) * time.Millisecond)
 	for {
 		select {
-		case <- clocker.C:
+		case <-clocker.C:
 			ci.RenewAmountInfo()
 			err := ci.RenewPriceInfo()
 			round = (round + 1) % 20
@@ -84,9 +84,9 @@ func (ci *CoinInfo) CoinInfoBody(head string) (body string) {
 	body += head
 	body += fmt.Sprintf("\n\nCOIN: %s\n", ci.CoinName)
 	body += fmt.Sprintf("COIN AMOUNT: %f, COIN PRICE: %f\n", coinAmount, coinPrice)
-	body += fmt.Sprintf("COIN ASSET: %f, USDT ASSET: %f\n", coinAmount * coinPrice, usdtAmount)
-	body += fmt.Sprintf("COIN / USDT RATIO: %s/usdt: %f\n\n\n", ci.CoinName, coinAmount*coinPrice / usdtAmount)
-	body += fmt.Sprintf("TOTAL ASSET: %f\n", coinAmount * coinPrice + usdtAmount)
+	body += fmt.Sprintf("COIN ASSET: %f, USDT ASSET: %f\n", coinAmount*coinPrice, usdtAmount)
+	body += fmt.Sprintf("COIN / USDT RATIO: %s/usdt: %f\n\n\n", ci.CoinName, coinAmount*coinPrice/usdtAmount)
+	body += fmt.Sprintf("TOTAL ASSET: %f\n", coinAmount*coinPrice+usdtAmount)
 	return body
 }
 
