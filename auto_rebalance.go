@@ -113,7 +113,7 @@ func (ar *AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool)
 		coinBuyAsset := perfectCoinAsset - info.CoinAmount*info.CoinPrice
 		coinBuyAmount := coinBuyAsset / info.CoinPrice
 
-		korok.Info("AutoRb, coinSellAsset: %f, coinSellAmount: %f", coinBuyAsset, coinBuyAmount)
+		korok.Info("AutoRb, coinBuyAsset: %f, coinBuyAmount: %f", coinBuyAsset, coinBuyAmount)
 
 		opRecord += fmt.Sprintf("<h1>BUY %s HAPPEND !</h1>\n\n", ar.CoinName)
 		opRecord += fmt.Sprintf("<h2>BUY INFO</h2>\n")
@@ -153,6 +153,8 @@ func (ar *AutoRebalance) BuyCoin(amount float64) error {
 		Symbol:    ar.CoinName + "usdt",
 		Type:      "buy-market",
 	}
+
+	korok.Info("AutoRb, BuyPara: %v", buyPara)
 	res, err := services.Place(buyPara)
 	if err != nil {
 		korok.Fatal("Place Buy Faild: %s", err)
@@ -176,6 +178,7 @@ func (ar *AutoRebalance) SellCoin(amount float64) error {
 		Symbol:    ar.CoinName + "usdt",
 		Type:      "sell-market",
 	}
+	korok.Info("AutoRb, SellPara: %v", sellPara)
 	res, err := services.Place(sellPara)
 	if err != nil {
 		korok.Fatal("Place Sell Faild: %s", err)
