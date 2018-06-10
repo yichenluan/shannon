@@ -122,7 +122,7 @@ func (ar *AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool)
 		opRecord += fmt.Sprintf("BUY PRICE: %f\n", info.CoinPrice)
 		opRecord += fmt.Sprintf("BUY ASSET: %f\n\n", coinBuyAsset)
 
-		placeErr = ar.BuyCoin(coinBuyAmount)
+		placeErr = ar.BuyCoin(coinBuyAsset)
 	}
 
 	if placeErr != nil {
