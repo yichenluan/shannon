@@ -93,10 +93,13 @@ func (ar *AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool)
 		return
 	}
 
+	korok.Info("AutoRb, totalAsset: %f, perfectCoinAsset: %f", totalAsset, perfectCoinAsset)
+
 	var placeErr error
 	if action == ACTION_SELL {
 		coinSellAsset := info.CoinAmount*info.CoinPrice - perfectCoinAsset
 		coinSellAmount := coinSellAsset / info.CoinPrice
+		korok.Info("AutoRb, coinSellAsset: %f, coinSellAmount: %f", coinSellAsset, coinSellAmount)
 
 		opRecord += fmt.Sprintf("<h1>SELL %s HAPPEND !</h1>\n\n", ar.CoinName)
 		opRecord += fmt.Sprintf("<h2>SELL INFO</h2>\n")
@@ -109,6 +112,8 @@ func (ar *AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool)
 	} else if action == ACTION_BUY {
 		coinBuyAsset := perfectCoinAsset - info.CoinAmount*info.CoinPrice
 		coinBuyAmount := coinBuyAsset / info.CoinPrice
+
+		korok.Info("AutoRb, coinSellAsset: %f, coinSellAmount: %f", coinBuyAsset, coinBuyAmount)
 
 		opRecord += fmt.Sprintf("<h1>BUY %s HAPPEND !</h1>\n\n", ar.CoinName)
 		opRecord += fmt.Sprintf("<h2>BUY INFO</h2>\n")
