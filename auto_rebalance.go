@@ -86,6 +86,12 @@ func (ar *AutoRebalance) HandleInfo(info *Info) (opRecord string, isChange bool)
 	}
 	totalAsset := info.CoinPrice*info.CoinAmount + info.USDTAmount
 	perfectCoinAsset := totalAsset * (ar.PerfectRatio / (ar.PerfectRatio + 1))
+	korok.Info("AutoRb, ratio: %v, info.CoinAmount: %v, info.USDTAmount: %v", ratio, info.CoinAmount, info.USDTAmount)
+	if info.CoinAmount == ar.LastRbCoinAmount || info.USDTAmount == ar.LastRbUSDTAmount {
+		korok.Fatal("need renew amount info")
+		isChange = false
+		return
+	}
 
 	var placeErr error
 	if action == ACTION_SELL {
