@@ -137,7 +137,7 @@ func (ar *AutoRebalance) BuyCoin(amount float64) error {
 
 	buyPara := models.PlaceRequestParams{
 		AccountID: ar.AccountID,
-		Amount:    fmt.Sprintf("%v", amount),
+		Amount:    fmt.Sprintf("%0.4f", amount),
 		Source:    "margin-api",
 		Symbol:    ar.CoinName + "usdt",
 		Type:      "buy-market",
@@ -160,7 +160,7 @@ func (ar *AutoRebalance) SellCoin(amount float64) error {
 
 	sellPara := models.PlaceRequestParams{
 		AccountID: ar.AccountID,
-		Amount:    fmt.Sprintf("%v", amount),
+		Amount:    fmt.Sprintf("%0.4f", amount),
 		Source:    "margin-api",
 		Symbol:    ar.CoinName + "usdt",
 		Type:      "sell-market",
